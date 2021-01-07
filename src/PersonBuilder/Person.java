@@ -2,6 +2,7 @@ package PersonBuilder;
 
 public abstract class Person {
     private String name, surname, login, password;
+    private int ID;
 
     public Person(String name, String surname, String login, String password){
         this.name = name;

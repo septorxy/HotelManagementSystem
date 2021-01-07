@@ -2,7 +2,8 @@ package HotelSystem;
 
 import Resources.PasswordGenerator;
 import Resources.SendEmail;
-import Storage.StorageEmp;
+import Resources.UI;
+import Storage.Database.StorageEmp;
 
 import javax.mail.MessagingException;
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class HumanResources {
     private Date calendar;
     private Date date;
     private Date time;
+    UI ui = new UI();
 
     public Date getTime() {
         return this.time;
@@ -43,23 +45,33 @@ public class HumanResources {
                 isAvail = true;
             }
         }while(!isAvail);
-        JTextField name = new JTextField();
-        JTextField surname = new JTextField();
-        JTextField salary = new JTextField();
-        JTextField job = new JTextField();
-        JTextField managerID = new JTextField();
-        JTextField email = new JTextField();
-        Object[] fields = {
-                "Name", name,
-                "Surname", surname,
-                "Yearly Salary", salary,
-                "Job", job,
-                "Manager / Supervisor", managerID,
-                "E-mail", email
-        };
-        JOptionPane.showConfirmDialog(null, fields, "Employee Input", JOptionPane.OK_CANCEL_OPTION);
+//        JTextField name = new JTextField();
+//        JTextField surname = new JTextField();
+//        JTextField salary = new JTextField();
+//        JTextField job = new JTextField();
+//        JTextField managerID = new JTextField();
+//        JTextField email = new JTextField();
+//        Object[] fields = {
+//                "Name", name,
+//                "Surname", surname,
+//                "Yearly Salary", salary,
+//                "Job", job,
+//                "Manager / Supervisor", managerID,
+//                "E-mail", email
+//        };
+//        new UI( fields, "Employee Input");
 
-        String login = name.getText().substring(0,1) + surname.getText() + empID;
+        String[] details = ui.newEmpUI();
+
+        String name = details[0];
+        String surname = details[1];
+        double salary = Double.parseDouble(details[2]);
+        String job = details[3];
+        int managerID = Integer.parseInt(details[4]);
+        String email = details[5];
+        // ask for data required then display -> Pass Params for data needed
+
+        String login = name.substring(0,1) + surname + empID;
         PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
                 .useDigits(true)
                 .useLower(true)
@@ -67,12 +79,12 @@ public class HumanResources {
                 .build();
         String password = passwordGenerator.generate(8);
 
-        JOptionPane.showMessageDialog(null, empID + "\n " + name.getText() +"\n "+ surname.getText() +"\n "+ login +"\n "+  password +"\n "+ salary.getText()+ "\n "+ String.valueOf(hoursWorked) +"\n "+ job.getText() +"\n "+ managerID.getText());
+        JOptionPane.showMessageDialog(null, empID + "\n " + name +"\n "+ surname +"\n "+ login +"\n "+  password +"\n "+ salary+ "\n "+ String.valueOf(hoursWorked) +"\n "+ job +"\n "+ managerID);
 
-        con.addNewEmp(empID,name.getText(),surname.getText(),login, password, Double.parseDouble(salary.getText()), hoursWorked, job.getText(), Integer.parseInt(managerID.getText()), email.getText());
+        con.addNewEmp(empID,name,surname,login, password, salary, hoursWorked, job, managerID, email);
 
         try {
-            SendEmail.sendMail(email.getText(), login, password);
+            SendEmail.sendMail(email, login, password);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

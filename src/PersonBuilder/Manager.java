@@ -1,7 +1,7 @@
 package PersonBuilder;
 
 
-import Storage.StorageEmp;
+import Storage.Database.StorageEmp;
 
 import java.util.ArrayList;
 import java.util.List;
