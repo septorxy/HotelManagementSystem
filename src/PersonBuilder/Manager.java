@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Manager extends Employee {
 
-    List<Integer> empManaged = new ArrayList<Integer>();
+    List<Integer> empManaged;
 
     public Manager(int empID, String name, String surname, String login, String password, String job, double salary, int managerID) {
         super(empID, name, surname, login, password, job, salary, managerID);

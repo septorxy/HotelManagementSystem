@@ -2,8 +2,8 @@ package PersonBuilder;
 
 public class Customer extends Person {
 
-    public Customer(String name, String surname, String login, String password) {
-        super(name, surname, login, password);
+    public Customer(String name, String surname, String login, String password, int ID) {
+        super(name, surname, login, password, ID);
     }
 
     public void setDates() {

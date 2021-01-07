@@ -4,11 +4,12 @@ public abstract class Person {
     private String name, surname, login, password;
     private int ID;
 
-    public Person(String name, String surname, String login, String password){
+    public Person(String name, String surname, String login, String password, int ID){
         this.name = name;
         this.surname = surname;
         this.login = login;
         this.password = password;
+        this.ID = ID;
     }
 
     public String getPassword() {
@@ -45,4 +46,7 @@ public abstract class Person {
         this.surname = surname;
     }
 
+    public int getID() { return ID; }
+
+    public void setID(int ID) { this.ID = ID; }
 }

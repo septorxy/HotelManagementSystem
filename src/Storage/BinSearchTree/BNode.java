@@ -1,14 +1,15 @@
 package Storage.BinSearchTree;
 
 import PersonBuilder.Employee;
+import PersonBuilder.Person;
 
 
 public class BNode {
-    public Employee obj;
+    public Person obj;
     public BNode left;
     public BNode right;
 
-    public BNode(Employee iObject){
+    public BNode(Person iObject){
         obj = iObject;
         left = null;
         right = null;

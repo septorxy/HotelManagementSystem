@@ -8,11 +8,9 @@ public class Employee extends Person{
     private int managerID;
     private String currentJob;
     private Date myCal; //To review
-    private int empID;
 
     public Employee(int empID, String name, String surname, String login, String password, String job, double salary, int managerID) {
-        super(name, surname, login, password);
-        this.empID = empID;
+        super(name, surname, login, password, empID);
         this.job = job;
         this.salary = salary;
         this.managerID = managerID;
@@ -24,10 +22,6 @@ public class Employee extends Person{
 
     public void setHoursWorked(Double hoursWorked) {
         this.hoursWorked = hoursWorked;
-    }
-
-    public int getEmpID() {
-        return this.empID;
     }
 
     @Override

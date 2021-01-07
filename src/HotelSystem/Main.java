@@ -1,14 +1,18 @@
 package HotelSystem;
 
-import Storage.Database.StorageEmp;
+import Storage.*;
+import Storage.BinSearchTree.BinSearchTreeCustom;
 
 public class Main {
     public static void main(String[] args){
-       StorageEmp store =  new StorageEmp();
+     //  StorageEmp store =  new StorageEmp();
 
-        HumanResources humanResources = new HumanResources();
+        //HumanResources humanResources = new HumanResources();
 
-        humanResources.addEmployee();
+   //     humanResources.addEmployee();
+
+
+        BinSearchTreeCustom BCustom = new BinSearchTreeCustom();
 
     }
 }

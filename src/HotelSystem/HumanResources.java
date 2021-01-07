@@ -39,27 +39,12 @@ public class HumanResources {
         boolean isAvail = false;
         double hoursWorked = 0;
         int empID;
-        do{
+        do {
             empID = (int) (Math.random() * (99999 - 10000) + 10000);
-            if(!con.searchEmpID(empID)){
+            if (!con.searchEmpID(empID)) {
                 isAvail = true;
             }
-        }while(!isAvail);
-//        JTextField name = new JTextField();
-//        JTextField surname = new JTextField();
-//        JTextField salary = new JTextField();
-//        JTextField job = new JTextField();
-//        JTextField managerID = new JTextField();
-//        JTextField email = new JTextField();
-//        Object[] fields = {
-//                "Name", name,
-//                "Surname", surname,
-//                "Yearly Salary", salary,
-//                "Job", job,
-//                "Manager / Supervisor", managerID,
-//                "E-mail", email
-//        };
-//        new UI( fields, "Employee Input");
+        } while (!isAvail);
 
         String[] details = ui.newEmpUI();
 
@@ -71,7 +56,7 @@ public class HumanResources {
         String email = details[5];
         // ask for data required then display -> Pass Params for data needed
 
-        String login = name.substring(0,1) + surname + empID;
+        String login = name.substring(0, 1) + surname + empID;
         PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
                 .useDigits(true)
                 .useLower(true)
@@ -79,9 +64,9 @@ public class HumanResources {
                 .build();
         String password = passwordGenerator.generate(8);
 
-        JOptionPane.showMessageDialog(null, empID + "\n " + name +"\n "+ surname +"\n "+ login +"\n "+  password +"\n "+ salary+ "\n "+ String.valueOf(hoursWorked) +"\n "+ job +"\n "+ managerID);
+        JOptionPane.showMessageDialog(null, empID + "\n " + name + "\n " + surname + "\n " + login + "\n " + password + "\n " + salary + "\n " + String.valueOf(hoursWorked) + "\n " + job + "\n " + managerID);
 
-        con.addNewEmp(empID,name,surname,login, password, salary, hoursWorked, job, managerID, email);
+        //con.addNewEmp(empID, name, surname, login, password, salary, hoursWorked, job, managerID, email);
 
         try {
             SendEmail.sendMail(email, login, password);
@@ -91,7 +76,6 @@ public class HumanResources {
     }
 
     /**
-     *
      * @param time
      */
     public void ClockIn(Date time) {
@@ -100,7 +84,6 @@ public class HumanResources {
     }
 
     /**
-     *
      * @param time
      */
     public void ClockOut(Date time) {
