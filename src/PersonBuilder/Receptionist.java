@@ -1,8 +1,8 @@
 package PersonBuilder;
 public class Receptionist extends Employee {
 
-    public Receptionist(int empID, String name, String surname, String login, String password, String job, double salary, int managerID) {
-        super(empID, name, surname, login, password, job, salary, managerID);
+    public Receptionist(int empID, String name, String surname, String login, String password, String job, double salary, int managerID, double hoursWorked, String email) {
+        super(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
     }
 
     public void createJob() {

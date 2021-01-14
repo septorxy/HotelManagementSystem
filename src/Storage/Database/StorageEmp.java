@@ -1,9 +1,8 @@
 package Storage.Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import PersonBuilder.Employee;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 public class StorageEmp {
@@ -16,16 +15,15 @@ public class StorageEmp {
         }catch(Exception e){ System.out.println(e);}
     }
 
-    public boolean addNewEmp(int empID, String name, String surname, String login, String password, double salary, double hoursWorked, String job, int managerID, String email){
-        String query = new StringBuilder().append("INSERT INTO `staff` (`empID`, `name`, `surname`, `login`, `password`, `salary`, `hoursWorked`, `job`, `managerID`, `email`) VALUES (").append(empID).append(", \"").append(name).append("\", \"").append(surname).append("\", \"").append(login).append("\", \"").append(password).append("\", ").append(salary).append(", ").append(hoursWorked).append(", \"").append(job).append("\", ").append(managerID).append(", \"").append(email).append("\")").toString();
+    public void addNewEmp(Employee newEmp){
+        String query = new StringBuilder().append("INSERT INTO `staff` (`empID`, `name`, `surname`, `login`, `password`, `salary`, `hoursWorked`, `job`, `managerID`, `email`) VALUES (").append(newEmp.getID()).append(", \"").append(newEmp.getName()).append("\", \"").append(newEmp.getSurname()).append("\", \"").append(newEmp.getLogin()).append("\", \"").append(newEmp.getPassword()).append("\", ").append(newEmp.getSalary()).append(", ").append(newEmp.getHoursWorked()).append(", \"").append(newEmp.getJob()).append("\", ").append(newEmp.getManager()).append(", \"").append(newEmp.getEmail()).append("\")").toString();
         try {
             Statement stmt = con.createStatement();
             stmt.executeQuery(query);
-            return true;
-        }catch (Exception E){ System.out.println(E); return false; }
+        }catch (Exception E){ System.out.println(E); }
     }
 
-    public boolean searchEmpID(int empID){
+    public boolean existsEmpID(int empID){
         String query = "SELECT * FROM `staff` WHERE empID = " + empID;
         try {
             Statement stmt = con.createStatement();
@@ -52,6 +50,19 @@ public class StorageEmp {
 
         }catch (Exception E){ System.out.println(E);}
         return null;
+    }
+
+    public void close(){
+        try {
+            con.close();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    public boolean Backup(){
+
+        return false;
     }
 
 }

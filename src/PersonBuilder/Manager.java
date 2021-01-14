@@ -3,15 +3,14 @@ package PersonBuilder;
 
 import Storage.Database.StorageEmp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Manager extends Employee {
 
-    List<Integer> empManaged;
+    private List<Integer> empManaged;
 
-    public Manager(int empID, String name, String surname, String login, String password, String job, double salary, int managerID) {
-        super(empID, name, surname, login, password, job, salary, managerID);
+    public Manager(int empID, String name, String surname, String login, String password, String job, double salary, int managerID, double hoursWorked, String email) {
+        super(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
         StorageEmp con = new StorageEmp();
         this.empManaged = con.findManaged(empID);
     }
@@ -34,4 +33,11 @@ public class Manager extends Employee {
         throw new UnsupportedOperationException();
     }
 
+    public List<Integer> getEmpManaged() {
+        return empManaged;
+    }
+
+    public void setEmpManaged(List<Integer> empManaged) {
+        this.empManaged = empManaged;
+    }
 }

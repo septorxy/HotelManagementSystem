@@ -11,4 +11,7 @@ public class Room {
         return this.roomNum;
     }
 
+    public void setCleaned(boolean cleaned) {
+        this.cleaned = cleaned;
+    }
 }

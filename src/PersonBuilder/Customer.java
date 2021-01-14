@@ -1,10 +1,14 @@
 package PersonBuilder;
 
+import HotelSystem.BookingsManager.Reservation;
+
 public class Customer extends Person {
 
     public Customer(String name, String surname, String login, String password, int ID) {
         super(name, surname, login, password, ID);
     }
+
+    private Reservation res;
 
     public void setDates() {
         // TODO - implement Customer.setDates

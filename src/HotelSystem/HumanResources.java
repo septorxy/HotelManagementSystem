@@ -1,12 +1,12 @@
 package HotelSystem;
 
+import PersonBuilder.Employee;
 import Resources.PasswordGenerator;
 import Resources.SendEmail;
 import Resources.UI;
 import Storage.Database.StorageEmp;
 
 import javax.mail.MessagingException;
-import javax.swing.*;
 import java.util.Date;
 
 public class HumanResources {
@@ -39,9 +39,10 @@ public class HumanResources {
         boolean isAvail = false;
         double hoursWorked = 0;
         int empID;
+        Employee newEmp;
         do {
             empID = (int) (Math.random() * (99999 - 10000) + 10000);
-            if (!con.searchEmpID(empID)) {
+            if (!con.existsEmpID(empID)) {
                 isAvail = true;
             }
         } while (!isAvail);
@@ -64,9 +65,12 @@ public class HumanResources {
                 .build();
         String password = passwordGenerator.generate(8);
 
-        JOptionPane.showMessageDialog(null, empID + "\n " + name + "\n " + surname + "\n " + login + "\n " + password + "\n " + salary + "\n " + String.valueOf(hoursWorked) + "\n " + job + "\n " + managerID);
+        //JOptionPane.showMessageDialog(null, empID + "\n " + name + "\n " + surname + "\n " + login + "\n " + password + "\n " + salary + "\n " + String.valueOf(hoursWorked) + "\n " + job + "\n " + managerID);
 
-        //con.addNewEmp(empID, name, surname, login, password, salary, hoursWorked, job, managerID, email);
+
+        newEmp = new Employee(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
+
+        con.addNewEmp(newEmp);
 
         try {
             SendEmail.sendMail(email, login, password);

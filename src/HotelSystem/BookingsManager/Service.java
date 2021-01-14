@@ -2,7 +2,7 @@ package HotelSystem.BookingsManager;
 
 import java.util.Date;
 
-public class Services {
+public class Service {
 
     private Date DateOfBooking;
     private Date Time;

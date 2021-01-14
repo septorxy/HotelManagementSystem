@@ -3,6 +3,7 @@ package Storage.Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 public class StorageCustom {
@@ -21,6 +22,15 @@ public class StorageCustom {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    //NOT DONE TODO
+    public void addNewCustom(int ID, String name, String surname, String login, String password, String email){
+        String query = "";
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeQuery(query);
+        }catch (Exception E){ System.out.println(E); }
     }
 
     public boolean Backup(){

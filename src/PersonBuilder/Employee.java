@@ -1,5 +1,6 @@
 package PersonBuilder;
-import java.util.*;
+
+import java.util.Date;
 
 public class Employee extends Person{
     private String job;
@@ -9,11 +10,12 @@ public class Employee extends Person{
     private String currentJob;
     private Date myCal; //To review
 
-    public Employee(int empID, String name, String surname, String login, String password, String job, double salary, int managerID) {
-        super(name, surname, login, password, empID);
+    public Employee(int empID, String name, String surname, String login, String password, String job, double salary, int managerID, double hoursWorked, String email) {
+        super(name, surname, login, password, empID, email);
         this.job = job;
         this.salary = salary;
         this.managerID = managerID;
+        this.hoursWorked = hoursWorked;
     }
 
     public Double getHoursWorked() {

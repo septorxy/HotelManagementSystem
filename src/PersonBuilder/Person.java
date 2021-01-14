@@ -1,15 +1,16 @@
 package PersonBuilder;
 
 public abstract class Person {
-    private String name, surname, login, password;
+    private String name, surname, login, password, email;
     private int ID;
 
-    public Person(String name, String surname, String login, String password, int ID){
+    public Person(String name, String surname, String login, String password, int ID, String email){
         this.name = name;
         this.surname = surname;
         this.login = login;
         this.password = password;
         this.ID = ID;
+        this.email = email;
     }
 
     public String getPassword() {
@@ -49,4 +50,12 @@ public abstract class Person {
     public int getID() { return ID; }
 
     public void setID(int ID) { this.ID = ID; }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
