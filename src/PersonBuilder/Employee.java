@@ -26,11 +26,6 @@ public class Employee extends Person{
         this.hoursWorked = hoursWorked;
     }
 
-    @Override
-    public void login(String login, String password) {
-        //Get Employee Login Screen
-    }
-
     public Double getSalary() {
         return salary;
     }
@@ -50,5 +45,35 @@ public class Employee extends Person{
 
     public void setManager(int managerID) {
         this.managerID = managerID;
+    }
+
+    /**
+     * @param time
+     */
+    public void ClockIn(Date time) {
+        // TODO - implement HumanResources.ClockIn
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @param time
+     */
+    public void ClockOut(Date time) {
+        // TODO - implement HumanResources.ClockOut
+        throw new UnsupportedOperationException();
+    }
+
+    public String requestLeave() {
+        // TODO - implement HumanResources.requestLeave
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean cancelLeave() {
+        // TODO - implement HumanResources.cancelLeave
+        throw new UnsupportedOperationException();
+    }
+
+    public void showLeave() {
+        throw new UnsupportedOperationException();
     }
 }

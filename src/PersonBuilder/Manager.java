@@ -15,11 +15,8 @@ public class Manager extends Employee {
         this.empManaged = con.findManaged(empID);
     }
 
-    /**
-     *
-     * @param request
-     */
-    public boolean approval(String request) {
+
+    public boolean approval() {
         // TODO - implement Manager.approval
         throw new UnsupportedOperationException();
     }

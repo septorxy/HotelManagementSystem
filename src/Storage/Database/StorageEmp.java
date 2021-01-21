@@ -52,6 +52,24 @@ public class StorageEmp {
         return null;
     }
 
+    public Employee getEmployee(String login, String password) {
+        String query = "SELECT * FROM `staff` WHERE login = '" + login + "' AND password = '" + password + "'";
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.isBeforeFirst()) {
+                rs.next();
+                return new Employee(rs.getInt("empID"), rs.getString("name"), rs.getString("surname"), rs.getString("login"), rs.getString("password"), rs.getString("job"),rs.getDouble("salary"), rs.getInt("managerID"), rs.getDouble("hoursWorked"), rs.getString("email"));
+            } else {
+                return null;
+            }
+        } catch (Exception E) {
+            System.out.println(E);
+        }
+        return null;
+    }
+
     public void close(){
         try {
             con.close();
@@ -60,9 +78,9 @@ public class StorageEmp {
         }
     }
 
-    public boolean Backup(){
-
-        return false;
-    }
+//    public boolean Backup(){
+//
+//        return false;
+//    }
 
 }

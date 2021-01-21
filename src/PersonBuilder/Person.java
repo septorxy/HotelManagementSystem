@@ -29,9 +29,7 @@ public abstract class Person {
         return this.login;
     }
 
-    public abstract void login(String login, String password);
-
-    public String getName() {
+    public  String getName() {
         return this.name;
     }
 
