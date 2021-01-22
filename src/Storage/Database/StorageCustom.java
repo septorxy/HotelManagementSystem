@@ -91,7 +91,7 @@ public class StorageCustom {
             System.out.println(E);
         }
     }
-    
+
     public Room[] getAvailRooms(String type, int numOfRooms, Date checkIn, Date checkOut) {
         Room[] roomsToReturn = new Room[3];
         String query = "SELECT * FROM `rooms` WHERE RoomType = '" + type + "'";
@@ -154,8 +154,12 @@ public class StorageCustom {
 
         try {
             Statement stmt = con.createStatement();
-            stmt.executeQuery(query);
-            return true;
+            if(existsResID(resID)) {
+                stmt.executeQuery(query);
+                return true;
+            }else{
+                return false;
+            }
         } catch (Exception E) {
             System.out.println(E);
         }

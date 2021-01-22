@@ -54,22 +54,16 @@ public class Customer extends Person {
 
     }
 
-    /**
-     *
-     * @param resID
-     */
     public void editBooking(String resID) {
         // TODO - implement Customer.editBooking
         throw new UnsupportedOperationException();
     }
 
-    /**
-     *
-     * @param resID
-     */
     public boolean cancelBooking(String resID) {
-        // TODO - implement Customer.cancelBooking
-        throw new UnsupportedOperationException();
+        StorageCustom dbCustom = new StorageCustom();
+        boolean result = dbCustom.deleteRes(resID);
+        dbCustom.close();
+        return result;
     }
 
     public boolean makePayment() {
@@ -79,6 +73,7 @@ public class Customer extends Person {
 
     public void makeComplaint() {
         // TODO - implement Customer.makeComplaint
+        //Send Email with message written by user.
         throw new UnsupportedOperationException();
     }
 

@@ -130,6 +130,9 @@ public class UI {
                 "8. Approve Leave (Manager)\n" +
                 "9. Add Employee (HR)\n" +
                 "10. Log Out");
+        if(choiceS == null){
+            return 10;
+        }
         return Integer.parseInt(choiceS);
     }
 
@@ -139,6 +142,9 @@ public class UI {
                 "2. View Booked Leave\n" +
                 "3. Cancel Leave\n" +
                 "4. Back");
+        if(choiceS == null){
+            return 4;
+        }
         return Integer.parseInt(choiceS);
     }
 
@@ -167,5 +173,16 @@ public class UI {
         }else{
             JOptionPane.showMessageDialog(null,"No Bookings here!");
         }
+    }
+
+    public int showBookingOptions(){
+        String choiceS = JOptionPane.showInputDialog("" +
+                "1. Edit Booking\n" +
+                "2. Cancel Booking\n" +
+                "3. Back");
+        if(choiceS == null){
+            return 3;
+        }
+        return Integer.parseInt(choiceS);
     }
 }

@@ -37,9 +37,23 @@ public class CustomerHandler {
                         c.showAllBookings();
                         break;
                     case 3:
-                        userSettings();
+                        switch (ui.showBookingOptions()){
+                            case 1:
+                                c.editBooking(ui.getSingleInput("Booking Code"));
+                                break;
+                            case 2:
+                                c.cancelBooking(ui.getSingleInput("Booking Code"));
+                                break;
+                            case 3:
+                                break;
+                            default:
+                                ui.showError("Invalid Entry");
+                        }
                         break;
                     case 4:
+                        userSettings();
+                        break;
+                    case 5:
                         break;
                     default:
                         ui.showError("Invalid Option");
