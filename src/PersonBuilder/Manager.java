@@ -8,11 +8,13 @@ import java.util.List;
 public class Manager extends Employee {
 
     private List<Integer> empManaged;
+    private List<String> perms;
 
     public Manager(int empID, String name, String surname, String login, String password, String job, double salary, int managerID, double hoursWorked, String email) {
         super(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
         StorageEmp con = new StorageEmp();
         this.empManaged = con.findManaged(empID);
+        con.close();
     }
 
 
@@ -25,7 +27,7 @@ public class Manager extends Employee {
      *
      * @param empManaged
      */
-    public void inherit(String[] empManaged) {
+    public void inherit(int[] empManaged) {
         // TODO - implement Manager.inherit
         throw new UnsupportedOperationException();
     }

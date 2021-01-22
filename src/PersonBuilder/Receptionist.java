@@ -28,17 +28,28 @@ public class Receptionist extends Employee {
         throw new UnsupportedOperationException();
     }
 
-    public void CheckInCustomer(String resID){
+    public boolean CheckInCustomer(String resID){
         StorageCustom dbCustom = new StorageCustom();
-        if(dbCustom.findReservation(resID)){
+        if(dbCustom.existsResID(resID)){
             dbCustom.checkInCustomer(resID);
+            dbCustom.close();
+            return true;
+        }else{
+            dbCustom.close();
+            return  false;
         }
+
     }
 
-    public void CheckOutCustomer(String resID){
+    public boolean CheckOutCustomer(String resID){
         StorageCustom dbCustom = new StorageCustom();
-        if(dbCustom.findReservation(resID)){
+        if(dbCustom.existsResID(resID)){
             dbCustom.deleteRes(resID);
+            dbCustom.close();
+            return true;
+        }else{
+            dbCustom.close();
+            return  false;
         }
     }
 

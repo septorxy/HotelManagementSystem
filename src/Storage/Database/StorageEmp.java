@@ -16,7 +16,7 @@ public class StorageEmp {
     }
 
     public void addNewEmp(Employee newEmp){
-        String query = new StringBuilder().append("INSERT INTO `staff` (`empID`, `name`, `surname`, `login`, `password`, `salary`, `hoursWorked`, `job`, `managerID`, `email`) VALUES (").append(newEmp.getID()).append(", \"").append(newEmp.getName()).append("\", \"").append(newEmp.getSurname()).append("\", \"").append(newEmp.getLogin()).append("\", \"").append(newEmp.getPassword()).append("\", ").append(newEmp.getSalary()).append(", ").append(newEmp.getHoursWorked()).append(", \"").append(newEmp.getJob()).append("\", ").append(newEmp.getManager()).append(", \"").append(newEmp.getEmail()).append("\")").toString();
+        String query = "INSERT INTO `staff` (`empID`, `name`, `surname`, `login`, `password`, `salary`, `hoursWorked`, `job`, `managerID`, `email`) VALUES (" + newEmp.getID() + ", '" + newEmp.getName() + "', '" + newEmp.getSurname() + "', '" + newEmp.getLogin() + "', '" + newEmp.getPassword() + "', " + newEmp.getSalary() + ", " + newEmp.getHoursWorked() + ", '" + newEmp.getJob() + "', " + newEmp.getManager() + ", '" + newEmp.getEmail() + "')";
         try {
             Statement stmt = con.createStatement();
             stmt.executeQuery(query);
@@ -77,10 +77,5 @@ public class StorageEmp {
             throwable.printStackTrace();
         }
     }
-
-//    public boolean Backup(){
-//
-//        return false;
-//    }
 
 }

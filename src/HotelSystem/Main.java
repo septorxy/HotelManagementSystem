@@ -31,5 +31,9 @@ public class Main {
                     ui.showError("Incorrect Entry");
             }
         }while(choice!=4);
+//        StorageCustom dbCustom = new StorageCustom();
+//        for(int i = 351; i<356; i++){
+//            dbCustom.rooms(i);
+//        }
     }
 }

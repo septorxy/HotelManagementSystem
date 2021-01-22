@@ -1,5 +1,7 @@
 package Resources;
 
+import HotelSystem.BookingsManager.Reservation;
+
 import javax.swing.*;
 
 public class UI {
@@ -8,12 +10,15 @@ public class UI {
 //        JButton newCustomer;
 //        JButton LoginCustomer;
 //        JButton LoginEmp;
-        String choiceS = JOptionPane.showInputDialog("1. For new customer\n2. For Login Customer\n3. For Login Emp");
+        String choiceS = JOptionPane.showInputDialog("1. For new customer\n2. For Login Customer\n3. For Login Emp\n4. Exit Program");
+        if(choiceS == null){
+            return 4;
+        }
         return Integer.parseInt(choiceS);
     }
 
 
-    public String[] showNewEmpUI(){
+    public String[] showNewEmpUI() {
         JTextField name = new JTextField();
         JTextField surname = new JTextField();
         JTextField salary = new JTextField();
@@ -34,7 +39,7 @@ public class UI {
         };
     }
 
-    public String[] showNewCustomerUI(){
+    public String[] showNewCustomerUI() {
         JTextField name = new JTextField();
         JTextField surname = new JTextField();
         JTextField ID = new JTextField();
@@ -49,37 +54,35 @@ public class UI {
         };
         JOptionPane.showConfirmDialog(null, fields, "New Customer Input", JOptionPane.YES_NO_CANCEL_OPTION);
         return new String[]{
-                name.getText(), surname.getText(),  password.getText(), ID.getText(), email.getText()
+                name.getText(), surname.getText(), password.getText(), ID.getText(), email.getText()
         };
     }
 
-    public void showError(String message){
+    public void showError(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 
     //The methods below should be within the web part of the project but since we are not doing that part for the prototype the methods are implemented here
-    public String[] showLoginUI(String type){
+    public String[] showLoginUI(String type) {
         JTextField login = new JTextField();
         JTextField password = new JTextField();
         Object[] fields = {
                 "Login", login,
                 "Password", password,
         };
-        if(type.equals("Customer")){
+        if (type.equals("Customer")) {
             JOptionPane.showConfirmDialog(null, fields, "Customer Login", JOptionPane.YES_NO_CANCEL_OPTION);
-        }else{
+        } else {
             JOptionPane.showConfirmDialog(null, fields, "Employee Login", JOptionPane.YES_NO_CANCEL_OPTION);
         }
         return new String[]{
-                login.getText(),  password.getText()
+                login.getText(), password.getText()
         };
     }
 
 
-
-
-    public int showUserOptions(){
+    public int showUserOptions() {
 //        JFrame Frame;
 //        JButton NewRes;
 //        JButton showBooked;
@@ -92,7 +95,7 @@ public class UI {
         return Integer.parseInt(choiceS);
     }
 
-    public String[] showNewBookingUI(){
+    public String[] showNewBookingUI() {
         JTextField dateIn = new JTextField();
         JTextField dateOut = new JTextField();
         JTextField roomType = new JTextField();// Would be a combo box in final product
@@ -105,14 +108,14 @@ public class UI {
         };
         do {
             JOptionPane.showConfirmDialog(null, fields, "New Reservation", JOptionPane.YES_NO_CANCEL_OPTION);
-        }while(Integer.parseInt(numberOfRooms.getText())>3);
+        } while (Integer.parseInt(numberOfRooms.getText()) > 3);
         return new String[]{
                 dateIn.getText(), dateOut.getText(), numberOfRooms.getText(), roomType.getText()
         };
     }
 
-    public String getInput(String message) {
-        return JOptionPane.showInputDialog("");
+    public String getSingleInput(String message) {
+        return JOptionPane.showInputDialog(message);
     }
 
     public int showEmpOptions() {
@@ -130,12 +133,37 @@ public class UI {
         return Integer.parseInt(choiceS);
     }
 
-    public int showLeaveOptionMenu(){
+    public int showLeaveOptionMenu() {
         String choiceS = JOptionPane.showInputDialog("" +
                 "1. Create new Leave\n" +
                 "2. View Booked Leave\n" +
                 "3. Cancel Leave\n" +
                 "4. Back");
         return Integer.parseInt(choiceS);
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "Message", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void formatBookings(Reservation[] reservations) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Reservation res : reservations) {
+            sb.append("Reservation ID: ").append(res.getResID()).append("\n");
+            sb.append("Check-In Date: ").append(res.getDatesOfStay()[0]).append("\n");
+            sb.append("Check-Out Date: ").append(res.getDatesOfStay()[1]).append("\n");
+            sb.append("Rooms Booked: ").append(res.getRoomsBooked()[0].getRoomNum());
+            if (res.getRoomsBooked()[2] != null) {
+                sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
+                sb.append(", ").append(res.getRoomsBooked()[2].getRoomNum());
+            }else if(res.getRoomsBooked()[1] != null){
+                sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
+            }
+            sb.append("\n");
+            sb.append("--------------------------\n");
+        }
+
+        JOptionPane.showMessageDialog(null, sb, "All bookings for customer ID: " + reservations[0].getResOwnerID(), JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -55,5 +55,5 @@ public class SendEmail {
         return null;
     }
 
-    //Add messages for customer - Login & Password + booking confirmations
+    //TODO Add messages for customer - Login & Password + booking confirmations
 }

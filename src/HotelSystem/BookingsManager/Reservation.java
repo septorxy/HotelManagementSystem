@@ -31,9 +31,8 @@ public class Reservation {
     }
 
 
-    public void setService() {
-        // TODO - implement Customer.setService
-        throw new UnsupportedOperationException();
+    public void setServicesBooked() {
+        this.servicesBooked = servicesBooked;
     }
 
     public Service[] getServicesBooked() {

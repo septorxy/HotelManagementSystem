@@ -20,12 +20,14 @@ public class HumanResources {
         Employee emp = con.getEmployee(loginDetails[0], loginDetails[1]);
         Manager manager = null;
         Receptionist receptionist = null;
+        boolean result;
 
         if (emp != null) {
             if(emp.getJob().equals("Manager")){
-                manager = (Manager)(emp);
+                manager = new Manager(emp.getID(), emp.getName(), emp.getSurname(), emp.getLogin(), emp.getPassword(), emp.getJob(), emp.getSalary(), emp.getManager(), emp.getHoursWorked(), emp.getEmail());
+                manager.setEmpManaged(con.findManaged(manager.getID()));
             }else if(emp.getJob().equals("Receptionist")){
-                receptionist = (Receptionist)(emp);
+                receptionist = new Receptionist(emp.getID(), emp.getName(), emp.getSurname(), emp.getLogin(), emp.getPassword(), emp.getJob(), emp.getSalary(), emp.getManager(), emp.getHoursWorked(), emp.getEmail());
             }
             int choice;
             do {
@@ -53,22 +55,30 @@ public class HumanResources {
                         break;
                     case 4:
                         if(receptionist!=null){
-                            receptionist.CheckInCustomer(ui.getInput("Enter Reservation ID"));
+                            if(receptionist.CheckInCustomer(ui.getSingleInput("Enter Reservation ID"))){
+                                ui.showMessage("Customer successfully checked in");
+                            }else{
+                                ui.showError("Reservation ID not found");
+                            }
                         }
                         break;
                     case 5:
                         if(receptionist!=null){
-                            receptionist.CheckOutCustomer(ui.getInput("Enter Reservation ID"));
+                            if(receptionist.CheckOutCustomer(ui.getSingleInput("Enter Reservation ID"))){
+                                ui.showMessage("Customer successfully checked in");
+                            }else{
+                                ui.showError("Reservation ID not found");
+                            }
                         }
                         break;
                     case 6:
                         if(receptionist!=null){
-                            receptionist.editBooking(ui.getInput("Enter Reservation ID"));
+                            receptionist.editBooking(ui.getSingleInput("Enter Reservation ID"));
                         }
                         break;
                     case 7:
                         if(receptionist!=null){
-                            receptionist.createJob(Integer.parseInt(ui.getInput("Enter Room Number that needs work done")));
+                            receptionist.createJob(Integer.parseInt(ui.getSingleInput("Enter Room Number that needs work done")));
                         }
                         break;
                     case 8:
@@ -122,8 +132,6 @@ public class HumanResources {
                 .useUpper(true)
                 .build();
         String password = passwordGenerator.generate(8);
-
-        //JOptionPane.showMessageDialog(null, empID + "\n " + name + "\n " + surname + "\n " + login + "\n " + password + "\n " + salary + "\n " + String.valueOf(hoursWorked) + "\n " + job + "\n " + managerID);
 
 
         newEmp = new Employee(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
