@@ -101,8 +101,8 @@ public class UI {
         JTextField roomType = new JTextField();// Would be a combo box in final product
         JTextField numberOfRooms = new JTextField();
         Object[] fields = {
-                "Date-In (dd-mm-yyyy)", dateIn,
-                "Date-Out (dd-mm-yyyy)", dateOut,
+                "Date-In (yyyy/mm/dd)", dateIn,
+                "Date-Out (yyyy/mm/dd)", dateOut,
                 "Number of Rooms (Max 3)", numberOfRooms,
                 "Room Types (Standard, Suite, Residential)", roomType // In final product different types of standard/suites/presidential exists based on num of ppl in room
         };
