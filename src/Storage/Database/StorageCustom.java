@@ -82,7 +82,7 @@ public class StorageCustom {
         java.util.Date[] dates = res.getDatesOfStay();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Room[] rooms = res.getRoomsBooked();
-        String query = "INSERT INTO `reservations` (customerID, resID, `Date In`, `Date Out`, `room1`, `room2`, `room3`) VALUES ('" + res.getResOwnerID() + "', '" + res.getResID() + "', '" + dateFormat.format(dates[0]) + "', '" + dateFormat.format(dates[1]) + "', '" + (rooms[0]!=null?rooms[0].getRoomNum():0) + "', '" + (rooms[1]!=null?rooms[1].getRoomNum():0) + "', '" + (rooms[2]!=null?rooms[2].getRoomNum():0) + "')";
+        String query = "INSERT INTO `reservations` (customerID, resID, `Date In`, `Date Out`, `room1`, `room2`, `room3`) VALUES ('" + res.getResOwnerID() + "', '" + res.getResID() + "', '" + dateFormat.format(dates[0]) + "', '" + dateFormat.format(dates[1]) + "', '" + (rooms[0] != null ? rooms[0].getRoomNum() : 0) + "', '" + (rooms[1] != null ? rooms[1].getRoomNum() : 0) + "', '" + (rooms[2] != null ? rooms[2].getRoomNum() : 0) + "')";
 
         try {
             Statement stmt = con.createStatement();
@@ -91,7 +91,7 @@ public class StorageCustom {
             System.out.println(E);
         }
     }
-
+    
     public Room[] getAvailRooms(String type, int numOfRooms, Date checkIn, Date checkOut) {
         Room[] roomsToReturn = new Room[3];
         String query = "SELECT * FROM `rooms` WHERE RoomType = '" + type + "'";
@@ -105,32 +105,43 @@ public class StorageCustom {
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            do {
-                roomsToReturn[0] = null;
-                roomsToReturn[1] = null;
-                roomsToReturn[2] = null;
-                rs.last();
-                lastRow = rs.getRow();
-                rs.beforeFirst();
+            rs.last();
+            lastRow = rs.getInt("RoomNum");
+            rs.beforeFirst();
+            rs.next();
+            initialVal = rs.getInt("RoomNum");
+            boolean full = false;
+            for (int i = initialVal; i < (int) (Math.random() * lastRow - initialVal - 2) + initialVal; i++) {
                 rs.next();
-                initialVal = rs.getInt("RoomNum");
-                for (int i = initialVal; i < (int) (Math.random() * lastRow - initialVal - 2) + initialVal; i++) {
-                    rs.next();
-                }
-                for (int i = 0; i < numOfRooms; i++) {
-                    roomsToReturn[i] = new Room(rs.getInt("RoomNum"), type, rs.getBoolean("cleaned"));
-                    currRoomNum = roomsToReturn[i].getRoomNum();
-                    query2 = "SELECT * FROM `reservations` WHERE room1 = '" + currRoomNum + "' OR room2 = '" + currRoomNum + "' OR room3 = '" + currRoomNum + "'";
-                    ResultSet rs2 = stmt.executeQuery(query2);
-                    if (rs2.isBeforeFirst()) {
+            }
+            for (int i = 0; i < numOfRooms; i++) {
+                roomsToReturn[i] = new Room(rs.getInt("RoomNum"), type, rs.getBoolean("cleaned"));
+                currRoomNum = roomsToReturn[i].getRoomNum();
+                query2 = "SELECT * FROM `reservations` WHERE room1 = '" + currRoomNum + "' OR room2 = '" + currRoomNum + "' OR room3 = '" + currRoomNum + "'";
+                ResultSet rs2 = stmt.executeQuery(query2);
+                if (rs2.isBeforeFirst()) {
+                    while (rs2.next()) {
                         dateIn = rs2.getDate("Date In");
                         dateOut = rs2.getDate("Date Out");
-                        cleared = (checkIn.toInstant().isAfter(dateOut.toInstant()) && checkOut.toInstant().isAfter(dateOut.toInstant())) || (checkIn.toInstant().isBefore(dateIn.toInstant()) && checkOut.toInstant().isBefore(dateIn.toInstant()));
+                        cleared =  (checkIn.compareTo(dateIn)<0 && checkOut.compareTo(dateIn)<0) || (checkIn.compareTo(dateOut)>0 && checkOut.compareTo(dateOut)>0);
+                        if (!cleared) {
+                            roomsToReturn[i] = null;
+                            i--;
+                            break;
+                        }
                     }
-                    rs.next();
                 }
-
-            } while (!cleared);
+                if (!rs.next()) {
+                    rs.beforeFirst();
+                    rs.next();
+                    if (!full) {
+                        full = true;
+                    } else {
+                        ui.showError("There is no rooms of this type available. Please select different dates or a different room type");
+                        return null;
+                    }
+                }
+            }
             return roomsToReturn;
         } catch (Exception E) {
             System.out.println(E);
@@ -173,14 +184,14 @@ public class StorageCustom {
             Reservation[] reservations = new Reservation[rs.getRow()];
             rs.beforeFirst();
             rs.next();
-            String query2 = "SELECT `RoomType` From rooms WHERE RoomNum = '" + rs.getInt("room1") +"'";
+            String query2 = "SELECT `RoomType` From rooms WHERE RoomNum = '" + rs.getInt("room1") + "'";
             ResultSet rs2 = stmt.executeQuery(query2);
             rs2.next();
             rs.beforeFirst();
             String roomType = rs2.getString("RoomType");
             int i = 0;
             while (rs.next()) {
-                reservations[i] = new Reservation(new Room[]{new Room(rs.getInt("room1"), roomType, true), rs.getInt("room2")!=0?new Room(rs.getInt("room2"), roomType, true):null, rs.getInt("room3")!=0?new Room(rs.getInt("room3"), roomType, true):null}, rs.getString("resID"), new Date[]{ rs.getDate("Date In"), rs.getDate("Date Out")}, rs.getInt("customerID"), null);
+                reservations[i] = new Reservation(new Room[]{new Room(rs.getInt("room1"), roomType, true), rs.getInt("room2") != 0 ? new Room(rs.getInt("room2"), roomType, true) : null, rs.getInt("room3") != 0 ? new Room(rs.getInt("room3"), roomType, true) : null}, rs.getString("resID"), new Date[]{rs.getDate("Date In"), rs.getDate("Date Out")}, rs.getInt("customerID"), null);
                 i++;
             }
             return reservations;
@@ -190,7 +201,7 @@ public class StorageCustom {
         return null;
     }
 
-    public void close(){
+    public void close() {
         try {
             con.close();
         } catch (SQLException throwable) {

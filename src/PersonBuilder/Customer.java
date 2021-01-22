@@ -21,32 +21,37 @@ public class Customer extends Person {
         UI ui = new UI();
         StorageCustom dbCustom = new StorageCustom();
         String[] details = ui.showNewBookingUI();
-        Room[] bookRooms = new Room[3];
+        Room[] bookRooms;
         try {
             bookRooms = dbCustom.getAvailRooms(details[3], Integer.parseInt(details[2]),new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1]));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
-                .useDigits(false)
-                .useLower(false)
-                .useUpper(true)
-                .build();
-        String resID = passwordGenerator.generate(6);
-        while(dbCustom.existsResID(resID)){
-            resID = passwordGenerator.generate(6);
-        }
-        try {
-            Date[] datesOfStay = { new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
-            Reservation newRes = new Reservation(bookRooms, resID, datesOfStay , getID(), null);
-            if(makePayment()) {
-                dbCustom.newReservation(newRes);
-                //Send Email Here with confirmation
+            if(bookRooms == null){
+                throw new Exception();
             }
+            PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                    .useDigits(false)
+                    .useLower(false)
+                    .useUpper(true)
+                    .build();
+            String resID = passwordGenerator.generate(6);
+            while(dbCustom.existsResID(resID)){
+                resID = passwordGenerator.generate(6);
+            }
+            try {
+                Date[] datesOfStay = { new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
+                Reservation newRes = new Reservation(bookRooms, resID, datesOfStay , getID(), null);
+                if(makePayment()) {
+                    dbCustom.newReservation(newRes);
+                    //Send Email Here with confirmation
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dbCustom.close();
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (Exception ignored) {
         }
-        dbCustom.close();
+
     }
 
     /**
