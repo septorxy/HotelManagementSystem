@@ -44,7 +44,7 @@ public class Receptionist extends Employee {
     public boolean CheckOutCustomer(String resID){
         StorageCustom dbCustom = new StorageCustom();
         if(dbCustom.existsResID(resID)){
-            dbCustom.deleteRes(resID);
+            dbCustom.checkOutCustomer(resID);
             dbCustom.close();
             return true;
         }else{

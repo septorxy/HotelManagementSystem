@@ -97,7 +97,7 @@ public class HumanResources {
                         ui.showError("Invalid Option");
 
                 }
-            }while (choice != 4);
+            }while (choice != 10);
         } else {
             ui.showError("The login or password is incorrect. Please try again.");
         }

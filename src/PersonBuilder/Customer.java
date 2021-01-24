@@ -23,8 +23,8 @@ public class Customer extends Person {
         String[] details = ui.showNewBookingUI();
         Room[] bookRooms;
         try {
-            bookRooms = dbCustom.getAvailRooms(details[3], Integer.parseInt(details[2]),new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1]));
-            if(bookRooms == null){
+            bookRooms = dbCustom.getAvailRooms(details[3], Integer.parseInt(details[2]), new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1]));
+            if (bookRooms == null) {
                 throw new Exception();
             }
             PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
@@ -33,16 +33,19 @@ public class Customer extends Person {
                     .useUpper(true)
                     .build();
             String resID = passwordGenerator.generate(6);
-            while(dbCustom.existsResID(resID)){
+            while (dbCustom.existsResID(resID)) {
                 resID = passwordGenerator.generate(6);
             }
             try {
-                Date[] datesOfStay = { new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
-                Reservation newRes = new Reservation(bookRooms, resID, datesOfStay , getID(), null);
-                if(makePayment()) {
-                    dbCustom.newReservation(newRes);
-                    //Send Email Here with confirmation
+                Date[] datesOfStay = {new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
+                Reservation newRes;
+                if (makePayment(true)) {
+                    newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Confirmed");
+                } else {
+                    newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Unconfirmed");
                 }
+                dbCustom.newReservation(newRes);
+                //Send Email Here with confirmation
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -55,20 +58,50 @@ public class Customer extends Person {
     }
 
     public void editBooking(String resID) {
-        // TODO - implement Customer.editBooking
-        throw new UnsupportedOperationException();
+        StorageCustom dbCustom = new StorageCustom();
+        UI ui = new UI();
+        Reservation toChange = dbCustom.getReservation(resID);
+        if (toChange != null) {
+            boolean dateInChanged = false;
+            boolean dateOutChanged = false;
+            boolean numRoomsChanged= false;
+            String[] changes = ui.showEditOptions(toChange);
+            try {
+                Date dateInEdit = new SimpleDateFormat("yyyy/MM/dd").parse(changes[0]);
+                Date dateOutEdit = new  SimpleDateFormat("yyyy/MM/dd").parse(changes[1]);
+
+                if (!dateInEdit.equals(toChange.getDatesOfStay()[0])) {
+                    dateInChanged = true;
+                }
+                if (!dateOutEdit.equals(toChange.getDatesOfStay()[0])) {
+                    dateOutChanged = true;
+                }
+                if (Integer.parseInt(changes[2]) != toChange.getRoomsBooked().length) {
+                    numRoomsChanged = true;
+                }
+                dbCustom.editReservation(dateInChanged, dateOutChanged, numRoomsChanged, dateInEdit, dateOutEdit, Integer.parseInt(changes[2]), resID);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        dbCustom.close();
     }
 
     public boolean cancelBooking(String resID) {
         StorageCustom dbCustom = new StorageCustom();
-        boolean result = dbCustom.deleteRes(resID);
+        boolean result = dbCustom.cancelRes(resID);
         dbCustom.close();
         return result;
     }
 
-    public boolean makePayment() {
-        System.out.println("Payment Portal...\nPayment is assumed successful");
-        return true;
+    public boolean makePayment(boolean paid) {
+        System.out.println("Payment Portal...");
+        if (paid) {
+            System.out.println("Payment is assumed successful");
+        } else {
+            System.out.println("Payment is assumed to be delayed to a later date");
+        }
+        return paid;
     }
 
     public void makeComplaint() {
@@ -77,7 +110,7 @@ public class Customer extends Person {
         throw new UnsupportedOperationException();
     }
 
-    public void showAllBookings(){
+    public void showAllBookings() {
         UI ui = new UI();
         StorageCustom dbCustom = new StorageCustom();
         Reservation[] res = dbCustom.getAllBookings(getID());

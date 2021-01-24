@@ -185,4 +185,21 @@ public class UI {
         }
         return Integer.parseInt(choiceS);
     }
+
+    public String[] showEditOptions(Reservation toChange) {
+        JTextField dateIn = new JTextField();
+        JTextField dateOut = new JTextField();
+        JTextField numberOfRooms = new JTextField();
+        Object[] fields = {
+                "Current Date In: " + toChange.getDatesOfStay()[0], dateIn,
+                "Current Date Out: " + toChange.getDatesOfStay()[1], dateOut,
+                "Current Number of Rooms: " + toChange.getRoomsBooked().length, numberOfRooms,
+        };
+        do {
+            JOptionPane.showConfirmDialog(null, fields, "Edit Reservation", JOptionPane.YES_NO_CANCEL_OPTION);
+        } while (Integer.parseInt(numberOfRooms.getText()) > 3);
+        return new String[]{
+                dateIn.getText(), dateOut.getText(), numberOfRooms.getText()
+        };
+    }
 }
