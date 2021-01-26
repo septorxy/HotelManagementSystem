@@ -4,9 +4,11 @@ import HotelSystem.BookingsManager.Reservation;
 import HotelSystem.BookingsManager.Room;
 import HotelSystem.BookingsManager.Service;
 import Resources.PasswordGenerator;
+import Resources.SendEmail;
 import Resources.UI;
 import Storage.Database.StorageCustom;
 
+import javax.mail.MessagingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +49,8 @@ public class Customer extends Person {
                         newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Unconfirmed");
                     }
                     dbCustom.newReservation(newRes);
-                    //Send Email Here with confirmation
+                    String email = "Dear " + getName() + ",\nPlease find below your Booking:\n" + ui.buildRes(newRes).toString() + "I hope you enjoy your stay with us!\nSincerely,\nThe management";
+                    SendEmail.sendMailCustom(getEmail(), email);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -84,6 +87,8 @@ public class Customer extends Person {
                     numRoomsChanged = true;
                 }
                 dbCustom.editReservation(dateInChanged, dateOutChanged, numRoomsChanged, dateInEdit, dateOutEdit, Integer.parseInt(changes[2]), resID);
+                String email = "Dear " + getName() + ",\nPlease find below your Booking:\n" + ui.buildRes(dbCustom.getReservation(resID)).toString() + "I hope you enjoy your stay with us!\nSincerely,\nThe management";
+                SendEmail.sendMailCustom(getEmail(), email);
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -96,6 +101,12 @@ public class Customer extends Person {
     public boolean cancelBooking(String resID) {
         StorageCustom dbCustom = new StorageCustom();
         boolean result = dbCustom.cancelRes(resID);
+        String email = "Dear " + getName() + ",\nYour booking " + resID + " has been cancelled.\nSincerely,\nThe management";
+        try {
+            SendEmail.sendMailCustom(getEmail(), email);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
         dbCustom.close();
         return result;
     }
@@ -108,12 +119,6 @@ public class Customer extends Person {
             System.out.println("Payment is assumed to be delayed to a later date");
         }
         return paid;
-    }
-
-    public void makeComplaint() {
-        // TODO - implement Customer.makeComplaint
-        //Send Email with message written by user.
-        throw new UnsupportedOperationException();
     }
 
     public void showAllBookings() {

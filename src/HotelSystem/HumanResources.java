@@ -183,7 +183,7 @@ public class HumanResources {
             con.addNewEmp(newEmp);
 
             try {
-                SendEmail.sendMail(email, login, password);
+                SendEmail.sendMailEmp(email, login, password);
             } catch (MessagingException e) {
                 e.printStackTrace();
             }

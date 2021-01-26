@@ -276,26 +276,33 @@ public class UI {
     }
 
     public void formatBookings(Reservation[] reservations) {
-        StringBuilder sb = new StringBuilder();
+
         if (reservations != null) {
+            StringBuilder sb = new StringBuilder();
             for (Reservation res : reservations) {
-                sb.append("Reservation ID: ").append(res.getResID()).append("\n");
-                sb.append("Check-In Date: ").append(res.getDatesOfStay()[0]).append("\n");
-                sb.append("Check-Out Date: ").append(res.getDatesOfStay()[1]).append("\n");
-                sb.append("Rooms Booked: ").append(res.getRoomsBooked()[0].getRoomNum());
-                if (res.getRoomsBooked()[2] != null) {
-                    sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
-                    sb.append(", ").append(res.getRoomsBooked()[2].getRoomNum());
-                } else if (res.getRoomsBooked()[1] != null) {
-                    sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
-                }
-                sb.append("\n");
-                sb.append("--------------------------\n");
+                sb.append(buildRes(res));
             }
             JOptionPane.showMessageDialog(null, sb, "All bookings for customer ID: " + reservations[0].getResOwnerID(), JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "No Bookings here!");
         }
+    }
+
+    public StringBuilder buildRes(Reservation res) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Reservation ID: ").append(res.getResID()).append("\n");
+        sb.append("Check-In Date: ").append(res.getDatesOfStay()[0]).append("\n");
+        sb.append("Check-Out Date: ").append(res.getDatesOfStay()[1]).append("\n");
+        sb.append("Rooms Booked: ").append(res.getRoomsBooked()[0].getRoomNum());
+        if (res.getRoomsBooked()[2] != null) {
+            sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
+            sb.append(", ").append(res.getRoomsBooked()[2].getRoomNum());
+        } else if (res.getRoomsBooked()[1] != null) {
+            sb.append(", ").append(res.getRoomsBooked()[1].getRoomNum());
+        }
+        sb.append("\n");
+        sb.append("--------------------------\n");
+        return sb;
     }
 
     public int showBookingOptions() {

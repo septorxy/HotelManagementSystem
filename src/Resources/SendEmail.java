@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class SendEmail {
 
-    public static void sendMail(String recipient, String login, String password) throws MessagingException {
+    public static void sendMailEmp(String recipient, String login, String password) throws MessagingException {
         System.out.println("Preparing...");
         Properties properties = new Properties();
 
@@ -55,5 +55,46 @@ public class SendEmail {
         return null;
     }
 
-    //TODO Add messages for customer - Login & Password + booking confirmations
+    public static void sendMailCustom(String recipient, String data) throws MessagingException {
+        System.out.println("Preparing...");
+        Properties properties = new Properties();
+
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+
+
+        String myAcc = "hotelWPUT@gmail.com";
+        String pass = "tr1v14l 45f";
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(myAcc, pass);
+            }
+        });
+
+
+        Message message = prepareMessageCustom(session, myAcc, recipient, data);
+
+        assert message != null;
+        Transport.send(message);
+
+        System.out.println("Sent");
+    }
+
+    private static Message prepareMessageCustom(Session session, String myAcc, String recip, String data) {
+        Message message = new MimeMessage(session);
+        try {
+            message.setFrom(new InternetAddress(myAcc));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recip));
+            message.setSubject("Mail from Maritim automated system");
+            message.setText(data);
+            return message;
+        } catch (MessagingException e) {
+            Logger.getLogger(SendEmail.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
 }

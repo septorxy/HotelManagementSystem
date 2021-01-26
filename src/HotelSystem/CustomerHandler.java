@@ -1,8 +1,11 @@
 package HotelSystem;
 
 import PersonBuilder.Customer;
+import Resources.SendEmail;
 import Resources.UI;
 import Storage.Database.StorageCustom;
+
+import javax.mail.MessagingException;
 
 public class CustomerHandler {
     private final StorageCustom dbCustom = new StorageCustom();
@@ -17,6 +20,12 @@ public class CustomerHandler {
         Customer newCustom = new Customer(details[0], details[1], login, details[2], Integer.parseInt(details[3]), details[4]);
         if (!dbCustom.existsCustomer(newCustom.getID())) {
             dbCustom.addNewCustom(String.valueOf(newCustom.getID()), newCustom.getName(), newCustom.getSurname(), newCustom.getLogin(), newCustom.getPassword(), newCustom.getEmail());
+            String email = "Dear " + newCustom.getName() + ",\nNew Customer has been created.\nUsername: " + newCustom.getLogin() + "\nSincerely,\nThe management";
+            try {
+                SendEmail.sendMailCustom(newCustom.getEmail(), email);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
         } else {
             ui.showError("This customerID already exists");
         }
