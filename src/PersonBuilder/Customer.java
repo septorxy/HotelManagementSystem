@@ -2,6 +2,7 @@ package PersonBuilder;
 
 import HotelSystem.BookingsManager.Reservation;
 import HotelSystem.BookingsManager.Room;
+import HotelSystem.BookingsManager.Service;
 import Resources.PasswordGenerator;
 import Resources.UI;
 import Storage.Database.StorageCustom;
@@ -20,41 +21,44 @@ public class Customer extends Person {
     public void makeBooking() {
         UI ui = new UI();
         StorageCustom dbCustom = new StorageCustom();
-        String[] details = ui.showNewBookingUI();
-        Room[] bookRooms;
         try {
-            bookRooms = dbCustom.getAvailRooms(details[3], Integer.parseInt(details[2]), new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1]));
-            if (bookRooms == null) {
-                throw new Exception();
-            }
-            PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
-                    .useDigits(false)
-                    .useLower(false)
-                    .useUpper(true)
-                    .build();
-            String resID = passwordGenerator.generate(6);
-            while (dbCustom.existsResID(resID)) {
-                resID = passwordGenerator.generate(6);
-            }
+            String[] details = ui.showNewBookingUI();
+            Room[] bookRooms;
             try {
-                Date[] datesOfStay = {new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
-                Reservation newRes;
-                if (makePayment(true)) {
-                    newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Confirmed");
-                } else {
-                    newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Unconfirmed");
+                bookRooms = dbCustom.getAvailRooms(details[3], Integer.parseInt(details[2]), new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1]));
+                if (bookRooms == null) {
+                    throw new Exception();
                 }
-                dbCustom.newReservation(newRes);
-                //Send Email Here with confirmation
+                PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                        .useDigits(false)
+                        .useLower(false)
+                        .useUpper(true)
+                        .build();
+                String resID = passwordGenerator.generate(6);
+                while (dbCustom.existsResID(resID)) {
+                    resID = passwordGenerator.generate(6);
+                }
+                try {
+                    Date[] datesOfStay = {new SimpleDateFormat("yyyy/MM/dd").parse(details[0]), new SimpleDateFormat("yyyy/MM/dd").parse(details[1])};
+                    Reservation newRes;
+                    if (makePayment(true)) {
+                        newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Confirmed");
+                    } else {
+                        newRes = new Reservation(bookRooms, resID, datesOfStay, getID(), null, "Booking Unconfirmed");
+                    }
+                    dbCustom.newReservation(newRes);
+                    //Send Email Here with confirmation
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
+            } catch (Exception ignored) {
             }
-            dbCustom.close();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (Exception ignored) {
+        } catch (Exception E) {
+            ui.showError("Process Cancelled");
         }
-
+        dbCustom.close();
     }
 
     public void editBooking(String resID) {
@@ -65,8 +69,8 @@ public class Customer extends Person {
             boolean dateInChanged = false;
             boolean dateOutChanged = false;
             boolean numRoomsChanged= false;
-            String[] changes = ui.showEditOptions(toChange);
             try {
+                String[] changes = ui.showEditOptions(toChange);
                 Date dateInEdit = new SimpleDateFormat("yyyy/MM/dd").parse(changes[0]);
                 Date dateOutEdit = new  SimpleDateFormat("yyyy/MM/dd").parse(changes[1]);
 
@@ -82,6 +86,8 @@ public class Customer extends Person {
                 dbCustom.editReservation(dateInChanged, dateOutChanged, numRoomsChanged, dateInEdit, dateOutEdit, Integer.parseInt(changes[2]), resID);
             } catch (ParseException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                ui.showError("Process Cancelled");
             }
         }
         dbCustom.close();
@@ -119,4 +125,18 @@ public class Customer extends Person {
     }
 
 
+    public void serviceBooking() {
+        UI ui = new UI();
+        StorageCustom dbCustom = new StorageCustom();
+        try {
+            String resID = ui.getSingleInput("What is your Reservation ID?");
+            Service newService = ui.showServiceWindow(dbCustom.getReservation(resID));
+            dbCustom.setService(newService, resID);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            ui.showError("Process Cancelled");
+        }
+        dbCustom.close();
+    }
 }

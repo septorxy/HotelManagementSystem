@@ -5,20 +5,20 @@ import Resources.UI;
 import Storage.Database.StorageCustom;
 
 public class CustomerHandler {
-    private StorageCustom dbCustom = new StorageCustom();
-    private UI ui = new UI();
+    private final StorageCustom dbCustom = new StorageCustom();
+    private final UI ui = new UI();
 
 
     //The methods below should be within the web part of the project but since we are not doing that part for the prototype the methods are implemented here
 
 
     public void newCustomer(String[] details) {
-        String login = details[0].substring(0, 1) + details[1] + details[3];
+        String login = details[0].charAt(0) + details[1] + details[3];
         Customer newCustom = new Customer(details[0], details[1], login, details[2], Integer.parseInt(details[3]), details[4]);
         if (!dbCustom.existsCustomer(newCustom.getID())) {
             dbCustom.addNewCustom(String.valueOf(newCustom.getID()), newCustom.getName(), newCustom.getSurname(), newCustom.getLogin(), newCustom.getPassword(), newCustom.getEmail());
         } else {
-            ui.showError("This customer already exists");
+            ui.showError("This customerID already exists");
         }
     }
 
@@ -51,15 +51,18 @@ public class CustomerHandler {
                         }
                         break;
                     case 4:
-                        userSettings();
+                        c.serviceBooking();
                         break;
                     case 5:
+                        userSettings();
+                        break;
+                    case 6:
                         break;
                     default:
                         ui.showError("Invalid Option");
 
                 }
-            }while (choice != 4);
+            } while (choice != 6);
         } else {
             ui.showError("The login or password is incorrect. Please try again.");
         }

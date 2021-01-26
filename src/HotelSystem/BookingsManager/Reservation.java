@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class Reservation {
 
-    private Room[] roomsBooked;
-    private String resID;
-    private Date[] DatesOfStay;
-    private int resOwnerID;
-    private Service[] servicesBooked;
-    private String status;
+    private final Room[] roomsBooked;
+    private final String resID;
+    private final Date[] DatesOfStay;
+    private final int resOwnerID;
+    private final Service[] servicesBooked;
+    private final String status;
 
-    public Reservation(Room[] roomsBooked, String resID, Date[] datesOfStay, int resOwnerID, Service[] servicesBooked, String status){
+    public Reservation(Room[] roomsBooked, String resID, Date[] datesOfStay, int resOwnerID, Service[] servicesBooked, String status) {
         this.roomsBooked = roomsBooked;
         this.resID = resID;
         this.DatesOfStay = datesOfStay;
@@ -26,19 +26,6 @@ public class Reservation {
 
     public Date[] getDatesOfStay() {
         return DatesOfStay;
-    }
-
-    public void setDatesOfStay(Date[] datesOfStay) {
-        DatesOfStay = datesOfStay;
-    }
-
-
-    public void setServicesBooked() {
-        this.servicesBooked = servicesBooked;
-    }
-
-    public Service[] getServicesBooked() {
-        return servicesBooked;
     }
 
     public int getResOwnerID() {

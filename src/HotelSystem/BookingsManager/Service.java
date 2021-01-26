@@ -4,20 +4,25 @@ import java.util.Date;
 
 public class Service {
 
-    private Date DateOfBooking;
-    private Date Time;
-    private String serviceID;
+    private final Date dateOfBooking;
+    private final Date time;
+    private final String type;
 
-    public String getServiceID() {
-        return this.serviceID;
+    public Service(Date dateOfBooking, Date time, String type) {
+        this.dateOfBooking = dateOfBooking;
+        this.time = time;
+        this.type = type;
     }
 
-    /**
-     *
-     * @param serviceID
-     */
-    public void setServiceID(String serviceID) {
-        this.serviceID = serviceID;
+    public Date getDateOfBooking() {
+        return dateOfBooking;
     }
 
+    public Date getTime() {
+        return time;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

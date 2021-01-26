@@ -1,11 +1,11 @@
 package HotelSystem.BookingsManager;
 
 public class Room {
-    private int roomNum;
-    private String roomType;
+    private final int roomNum;
+    private final String roomType;
     private boolean cleaned;
 
-    public Room(int roomNum, String roomType, boolean cleaned){
+    public Room(int roomNum, String roomType, boolean cleaned) {
         this.roomNum = roomNum;
         this.roomType = roomType;
         this.cleaned = cleaned;

@@ -3,12 +3,13 @@ package PersonBuilder;
 
 import Storage.Database.StorageEmp;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class Manager extends Employee {
 
     private List<Integer> empManaged;
-    private List<String> perms;
+
 
     public Manager(int empID, String name, String surname, String login, String password, String job, double salary, int managerID, double hoursWorked, String email) {
         super(empID, name, surname, login, password, job, salary, managerID, hoursWorked, email);
@@ -18,25 +19,32 @@ public class Manager extends Employee {
     }
 
 
-    public boolean approval() {
-        // TODO - implement Manager.approval
-        throw new UnsupportedOperationException();
+    public void approval() {
+        StorageEmp dbEmp = new StorageEmp();
+        dbEmp.toApprove(getID());
+        dbEmp.close();
     }
 
-    /**
-     *
-     * @param empManaged
-     */
-    public void inherit(int[] empManaged) {
-        // TODO - implement Manager.inherit
-        throw new UnsupportedOperationException();
-    }
-
-    public List<Integer> getEmpManaged() {
-        return empManaged;
+    public String[] inherit() {
+        StorageEmp dbEmp = new StorageEmp();
+        String[] jobs = dbEmp.findManagedJobs(empManaged);
+        dbEmp.close();
+        return jobs;
     }
 
     public void setEmpManaged(List<Integer> empManaged) {
         this.empManaged = empManaged;
+    }
+
+    public String generateReport(int month, int year) {
+        StorageEmp dbEmp = new StorageEmp();
+        String toRet = "";
+        try {
+            toRet = dbEmp.generateHoursWorkedReport(empManaged, month, year);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dbEmp.close();
+        return toRet;
     }
 }

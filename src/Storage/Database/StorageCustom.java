@@ -2,8 +2,10 @@ package Storage.Database;
 
 import HotelSystem.BookingsManager.Reservation;
 import HotelSystem.BookingsManager.Room;
+import HotelSystem.BookingsManager.Service;
 import PersonBuilder.Customer;
 import Resources.UI;
+import Resources.Validate;
 
 import java.sql.*;
 import java.text.DateFormat;
@@ -26,7 +28,7 @@ public class StorageCustom {
 
     public void addNewCustom(String IDs, String name, String surname, String login, String password, String email) {
         int ID = Integer.parseInt(IDs);
-        String query = new StringBuilder().append("INSERT INTO `customers` (`customerID`, `name`, `surname`, `login`, `password`, `email`) VALUES(").append("'").append(ID).append("', '").append(name).append("', '").append(surname).append("', '").append(login).append("', '").append(password).append("', '").append(email).append("')").toString();
+        String query = "INSERT INTO `customers` (`customerID`, `name`, `surname`, `login`, `password`, `email`) VALUES(" + "'" + ID + "', '" + name + "', '" + surname + "', '" + login + "', '" + password + "', '" + email + "')";
         try {
             Statement stmt = con.createStatement();
             stmt.executeQuery(query);
@@ -82,7 +84,6 @@ public class StorageCustom {
         java.util.Date[] dates = res.getDatesOfStay();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Room[] rooms = res.getRoomsBooked();
-        String confirmation;
         String query = "INSERT INTO `reserves` (customerID, resID, `Date In`, `Date Out`, `room1`, `room2`, `room3`, `status`) VALUES ('" + res.getResOwnerID() + "', '" + res.getResID() + "', '" + dateFormat.format(dates[0]) + "', '" + dateFormat.format(dates[1]) + "', '" + (rooms[0] != null ? rooms[0].getRoomNum() : 0) + "', '" + (rooms[1] != null ? rooms[1].getRoomNum() : 0) + "', '" + (rooms[2] != null ? rooms[2].getRoomNum() : 0) + "', '" + res.getStatus() + "')";
 
         try {
@@ -96,7 +97,7 @@ public class StorageCustom {
     public Room[] getAvailRooms(String type, int numOfRooms, Date checkIn, Date checkOut) {
         Room[] roomsToReturn = new Room[3];
         String query = "SELECT * FROM `rooms` WHERE RoomType = '" + type + "'";
-        boolean cleared = true;
+        boolean cleared;
         String query2;
         int currRoomNum;
         Date dateIn;
@@ -124,13 +125,18 @@ public class StorageCustom {
                     while (rs2.next()) {
                         dateIn = rs2.getDate("Date In");
                         dateOut = rs2.getDate("Date Out");
-                        cleared = (checkIn.compareTo(dateIn) < 0 && checkOut.compareTo(dateIn) < 0) || (checkIn.compareTo(dateOut) > 0 && checkOut.compareTo(dateOut) > 0);
+                        boolean isBefore = checkIn.compareTo(dateIn) < 0 && checkOut.compareTo(dateIn) < 0;
+                        boolean isAfter = (checkIn.compareTo(dateOut) > 0 && checkOut.compareTo(dateOut) > 0);
+                        cleared = ((isBefore || isAfter) && !Validate.existsIn(roomsToReturn, currRoomNum, i));
                         if (!cleared) {
                             roomsToReturn[i] = null;
                             i--;
                             break;
                         }
                     }
+                } else if (Validate.existsIn(roomsToReturn, currRoomNum, i)) {
+                    roomsToReturn[i] = null;
+                    i--;
                 }
                 if (!rs.next()) {
                     rs.beforeFirst();
@@ -173,12 +179,13 @@ public class StorageCustom {
     }
 
     public boolean cancelRes(String resID) {
-        String query = "UPDATE `reserves` SET `status` = 'Cancelled' WHERE `reserves`.`resID` = '" + resID + "'";
+        String query = "UPDATE `reserves` SET `status` = 'Cancelled', `room1` = NULL, `room2` = NULL, `room3` = NULL WHERE `reserves`.`resID` = '" + resID + "'";
 
         try {
             Statement stmt = con.createStatement();
             if (existsResID(resID)) {
                 stmt.executeQuery(query);
+                //Refund through 3rd party
                 return true;
             } else {
                 return false;
@@ -218,13 +225,13 @@ public class StorageCustom {
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             rs.last();
             Reservation[] reserves = new Reservation[rs.getRow()];
             rs.beforeFirst();
             rs.next();
             String query2 = "SELECT `RoomType` From rooms WHERE RoomNum = '" + rs.getInt("room1") + "'";
             ResultSet rs2 = stmt.executeQuery(query2);
+            boolean why = rs2.isBeforeFirst();
             rs2.next();
             rs.beforeFirst();
             String roomType = rs2.getString("RoomType");
@@ -250,33 +257,48 @@ public class StorageCustom {
 
     public void editReservation(boolean dateInChanged, boolean dateOutChanged, boolean numRoomsChanged, Date dateInEdit, Date dateOutEdit, int numRooms, String resID) {
         Reservation toChange = getReservation(resID);
-        Statement stmt = null;
+        Statement stmt;
         try {
             stmt = con.createStatement();
             String query3 = "SELECT `RoomType` From rooms WHERE RoomNum = '" + toChange.getRoomsBooked()[0].getRoomNum() + "'";
             ResultSet rs = stmt.executeQuery(query3);
             rs.next();
             String roomType = rs.getString("RoomType");
-        if (dateInChanged || dateOutChanged) {
-            String query = "UPDATE `reserves` SET" + (dateInChanged ? "`Date In` = '" + dateInEdit + "'" : "") + (dateInChanged&&dateOutChanged?",":"") + (dateOutChanged ? "`Date Out` = '" + dateOutEdit + "'" : "") +" WHERE `reserves`.`resID` = '" + resID + "'";
-            Room[] newRooms = getAvailRooms(roomType, numRooms, dateInEdit, dateOutEdit);
-            String query2 = "UPDATE `reserves` SET `room1` = '" + newRooms[0].getRoomNum() + "'" + (numRooms==2? ", `room2` = '"+ newRooms[1].getRoomNum() +"'" : "") + (numRooms==3? ", `room3` = '"+ newRooms[2].getRoomNum() +"'" : "") +" WHERE `reserves`.`resID` = '"+ resID +"'";
-            stmt.executeQuery(query2);
-            stmt.executeQuery(query);
-        }
-
-        if(numRoomsChanged){
-            if(numRooms<toChange.getRoomsBooked().length){
-                String query2 = "UPDATE `reserves` SET `room3` = NULL" + (numRooms==1? ", `room2` = NULL" : "") +" WHERE `reserves`.`resID` = '"+ resID +"'";
+            if (dateInChanged || dateOutChanged) {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String query = "UPDATE `reserves` SET" + (dateInChanged ? "`Date In` = '" + dateFormat.format(dateInEdit) + "'" : "") + (dateInChanged && dateOutChanged ? "," : "") + (dateOutChanged ? "`Date Out` = '" + dateFormat.format(dateOutEdit) + "'" : "") + " WHERE `reserves`.`resID` = '" + resID + "'";
+                String update_rooms_query = "UPDATE `reserves` SET `room1` = NULL, `room2` = NULL, `room3` = NULL WHERE `reserves`.`resID` = '" + resID + "'";
+                stmt.executeQuery(update_rooms_query);
+                Room[] newRooms = getAvailRooms(roomType, numRooms, dateInEdit, dateOutEdit);
+                String query2 = "UPDATE `reserves` SET `room1` = '" + newRooms[0].getRoomNum() + "'" + (numRooms >= 2 ? ", `room2` = '" + newRooms[1].getRoomNum() + "'" : "") + (numRooms == 3 ? ", `room3` = '" + newRooms[2].getRoomNum() + "'" : "") + " WHERE `reserves`.`resID` = '" + resID + "'";
                 stmt.executeQuery(query2);
-            }else{
-                Room[] newRooms = getAvailRooms(roomType, numRooms-toChange.getRoomsBooked().length, dateInEdit, dateOutEdit);
-                String query2 = "UPDATE `reserves` SET" + (numRooms-toChange.getRoomsBooked().length==1? " `room2` = '"+ newRooms[0].getRoomNum() +"'" : "") + (numRooms-toChange.getRoomsBooked().length==2? ", `room3` = '"+ newRooms[1].getRoomNum() +"'" : "") +" WHERE `reserves`.`resID` = '"+ resID +"'";
-                stmt.executeQuery(query2);
+                stmt.executeQuery(query);
             }
-        }
+
+            if (numRoomsChanged) {
+                if (numRooms < toChange.getRoomsBooked().length) {
+                    String query2 = "UPDATE `reserves` SET `room3` = NULL" + (numRooms == 1 ? ", `room2` = NULL" : "") + " WHERE `reserves`.`resID` = '" + resID + "'";
+                    stmt.executeQuery(query2);
+                } else {
+                    Room[] newRooms = getAvailRooms(roomType, numRooms - toChange.getRoomsBooked().length, dateInEdit, dateOutEdit);
+                    String query2 = "UPDATE `reserves` SET" + (numRooms - toChange.getRoomsBooked().length == 1 ? " `room2` = '" + newRooms[0].getRoomNum() + "'" : "") + (numRooms - toChange.getRoomsBooked().length == 2 ? ", `room3` = '" + newRooms[1].getRoomNum() + "'" : "") + " WHERE `reserves`.`resID` = '" + resID + "'";
+                    stmt.executeQuery(query2);
+                }
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    public void setService(Service newService, String resID) {
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat2 = new SimpleDateFormat("HH:mm");
+        String query = "INSERT INTO `services` (`resID`,`type`, `Time`, `Date`)  VALUES ('" + resID + "', '" + newService.getType() + "', '" + dateFormat2.format(newService.getTime()) + "', '" + dateFormat1.format(newService.getDateOfBooking()) + "')";
+        try {
+            Statement stmt = con.createStatement();
+            stmt.executeQuery(query);
+        } catch (Exception E) {
+            System.out.println(E);
         }
     }
 
