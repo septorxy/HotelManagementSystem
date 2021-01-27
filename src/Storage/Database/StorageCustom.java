@@ -144,7 +144,7 @@ public class StorageCustom {
                     if (!full) {
                         full = true;
                     } else {
-                        ui.showError("There is no rooms of this type available. Please select different dates or a different room type");
+                        ui.showError("There are no rooms of this type available. Please select different dates or a different room type");
                         return null;
                     }
                 }
