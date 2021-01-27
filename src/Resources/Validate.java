@@ -2,6 +2,7 @@ package Resources;
 
 import HotelSystem.BookingsManager.Room;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,5 +68,10 @@ public class Validate {
 
     public static boolean isServiceType(String type) {
         return type.equals("Spa") || type.equals("Pool") || type.equals("Restaurant") || type.equals("Room Service");
+    }
+
+    public static boolean isLater(Date date) {
+        Date dateCheck = new Date();
+        return date.compareTo(dateCheck) >= 0;
     }
 }

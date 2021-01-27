@@ -193,9 +193,9 @@ public class UI {
                 } else if (!Validate.isDate(dateIn.getText()) || !Validate.isDate(dateOut.getText())) {
                     verified = false;
                     problem += "\nDate is not inputted correctly. Must be inputted as yyyy/mm/dd";
-                } else if (dateFormat.parse(dateIn.getText()).compareTo(dateFormat.parse(dateOut.getText())) > 0) {
+                } else if (dateFormat.parse(dateIn.getText()).compareTo(dateFormat.parse(dateOut.getText())) > 0 || !Validate.isLater(dateFormat.parse(dateIn.getText())) || !Validate.isLater(dateFormat.parse(dateOut.getText()))) {
                     verified = false;
-                    problem += "\nTime doesn't flow backwards! Date-In must be before Date-Out.";
+                    problem += "\nTime doesn't flow backwards! Date-In must be before Date-Out and must be the current date or later";
                 } else if (!Validate.isNumber(numberOfRooms.getText(), "Integer") || Integer.parseInt(numberOfRooms.getText()) <= 0 || Integer.parseInt(numberOfRooms.getText()) > 3) {
                     verified = false;
                     problem += "\nNumber of rooms must be an integer between 1 and 3";
