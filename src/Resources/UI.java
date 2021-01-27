@@ -389,9 +389,9 @@ public class UI {
                 } else if (!Validate.isDate(dateIn.getText()) || !Validate.isDate(dateOut.getText())) {
                     verified = false;
                     problem = "\nDate is not inputted correctly. Must be inputted as yyyy/mm/dd";
-                } else if (dateFormat.parse(dateIn.getText()).compareTo(dateFormat.parse(dateOut.getText())) > 0) {
+                } else if (dateFormat.parse(dateIn.getText()).compareTo(dateFormat.parse(dateOut.getText())) > 0 || !Validate.isLater(dateFormat.parse(dateIn.getText())) || !Validate.isLater(dateFormat.parse(dateOut.getText()))) {
                     verified = false;
-                    problem = "\nTime doesn't flow backwards! Date-In must be before Date-Out.";
+                    problem = "\nTime doesn't flow backwards! Date-In must be before Date-Out and both must be at a later date";
                 }
             } else {
                 throw new Exception();
@@ -512,5 +512,9 @@ public class UI {
         return new int[]{
                 Integer.parseInt(month.getText()), Integer.parseInt(year.getText())
         };
+    }
+
+    public void showSuccessMessage() {
+        JOptionPane.showMessageDialog(null, "Success!");
     }
 }

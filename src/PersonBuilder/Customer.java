@@ -51,6 +51,7 @@ public class Customer extends Person {
                     dbCustom.newReservation(newRes);
                     String email = "Dear " + getName() + ",\nPlease find below your Booking:\n" + ui.buildRes(newRes).toString() + "I hope you enjoy your stay with us!\nSincerely,\nThe management";
                     SendEmail.sendMailCustom(getEmail(), email);
+                    ui.showSuccessMessage();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -89,6 +90,7 @@ public class Customer extends Person {
                 dbCustom.editReservation(dateInChanged, dateOutChanged, numRoomsChanged, dateInEdit, dateOutEdit, Integer.parseInt(changes[2]), resID);
                 String email = "Dear " + getName() + ",\nPlease find below your Booking:\n" + ui.buildRes(dbCustom.getReservation(resID)).toString() + "I hope you enjoy your stay with us!\nSincerely,\nThe management";
                 SendEmail.sendMailCustom(getEmail(), email);
+                ui.showSuccessMessage();
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -137,6 +139,7 @@ public class Customer extends Person {
             String resID = ui.getSingleInput("What is your Reservation ID?");
             Service newService = ui.showServiceWindow(dbCustom.getReservation(resID));
             dbCustom.setService(newService, resID);
+            ui.showSuccessMessage();
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (Exception e) {

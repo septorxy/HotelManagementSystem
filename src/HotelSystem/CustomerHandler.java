@@ -26,6 +26,7 @@ public class CustomerHandler {
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
+            ui.showSuccessMessage();
         } else {
             ui.showError("This customerID already exists");
         }
@@ -78,7 +79,7 @@ public class CustomerHandler {
     }
 
     public void userSettings() {
-        //Gives user option to change login and password
+        System.out.println("Feature not implemented as it is not in scope of prototype");
     }
 
 

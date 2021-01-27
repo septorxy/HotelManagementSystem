@@ -187,6 +187,7 @@ public class HumanResources {
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
+            ui.showSuccessMessage();
         } catch (Exception E) {
             ui.showError("Process Cancelled");
         }

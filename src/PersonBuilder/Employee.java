@@ -39,29 +39,34 @@ public class Employee extends Person {
 
 
     public void ClockIn() {
+        UI ui = new UI();
         StorageEmp dbEmp = new StorageEmp();
         dbEmp.clockIn(getID());
+        ui.showSuccessMessage();
         dbEmp.close();
     }
 
     public void ClockOut() {
         StorageEmp dbEmp = new StorageEmp();
+        UI ui = new UI();
         dbEmp.clockOut(getID());
+        ui.showSuccessMessage();
         dbEmp.close();
     }
 
     public void requestLeave() {
         UI ui = new UI();
         StorageEmp dbEmp = new StorageEmp();
-        Date[] details = new Date[2];
+        Date[] details;
         try {
             details = ui.showLeaveWindow();
+            dbEmp.reqLeave(details[0], details[1], getID(), getManager());
+            ui.showSuccessMessage();
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (Exception e) {
             ui.showError("Process Cancelled");
         }
-        dbEmp.reqLeave(details[0], details[1], getID(), getManager());
         dbEmp.close();
     }
 
@@ -71,6 +76,7 @@ public class Employee extends Person {
         try {
             int toDel = ui.showLeaveCancellation(dbEmp.getAllBookings(getID()));
             dbEmp.cancelLeave(toDel);
+            ui.showSuccessMessage();
             dbEmp.close();
             return true;
         } catch (Exception E) {

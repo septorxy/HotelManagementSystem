@@ -268,7 +268,7 @@ public class StorageEmp {
                     while (rs2.next()) {
                         hoursWorked += rs2.getDouble("hoursWorked");
                     }
-                    sb.append("\nHours Worked:").append(hoursWorked).append("----------------------");
+                    sb.append("\nHours Worked:").append(hoursWorked).append("\n----------------------\n");
                 }
                 return sb.toString();
             } else {
